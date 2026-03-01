@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 适配微信和手机屏幕 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>专属告白</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #ffe6f0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        /* 爱心动画容器 */
+        .heart-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        /* 爱心样式 */
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ff3366;
+            transform: rotate(45deg);
+            animation: float 6s ease-in-out infinite;
+            opacity: 0;
+        }
+        .heart::before, .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ff3366;
+            border-radius: 50%;
+        }
+        .heart::before {
+            top: -10px;
+            left: 0;
+        }
+        .heart::after {
+            top: 0;
+            left: -10px;
+        }
+        /* 爱心漂浮动画 */
+        @keyframes float {
+            0% {
+                transform: rotate(45deg) translateY(100vh) scale(0.3);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(45deg) translateY(-50px) scale(0.3);
+                opacity: 0;
+            }
+        }
+        /* 告白文字样式 */
+        .text-box {
+            z-index: 2;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .title {
+            font-size: 28px;
+            color: #ff3366;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .content {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        /* 按钮样式 */
+        .btn {
+            padding: 12px 30px;
+            background-color: #ff3366;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #e62958;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- 爱心动画容器 -->
+    <div class="heart-container" id="heartContainer"></div>
+
+    <!-- 告白文字区域 -->
+    <div class="text-box">
+        <h1 class="title">💘 写给马坪坪的告白 💘</h1>
+        <p class="content">
+            遇见你，是我所有美好故事的开始<br>
+            想和你一起看遍山川湖海<br>
+            想把所有温柔都给你<br>
+            你愿意和我在一起吗？
+        </p>
+        <button class="btn" id="loveBtn">我愿意 ❤️</button>
+    </div>
+
+    <!-- 背景音乐（可选，需替换成自己的音乐链接） -->
+    <audio id="music" loop>
+        <source src="https://example.com/love-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // 1. 生成随机爱心
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            
+            // 随机位置、大小、动画时长
+            const left = Math.random() * 100; // 水平位置 0-100%
+            const size = Math.random() * 15 + 10; // 大小 10-25px
+            const duration = Math.random() * 6 + 4; // 动画时长 4-10秒
+            
+            // 设置样式
+            heart.style.left = `${left}%`;
+            heart.style.width = `${size}px`;
+            heart.style.height = `${size}px`;
+            heart.style.animationDuration = `${duration}s`;
+            heart.style.animationDelay = `${Math.random() * 5}s`;
+            
+            // 添加到页面
+            const container = document.getElementById('heartContainer');
+            container.appendChild(heart);
+            
+            // 移除过期的爱心
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+
+        // 2. 定时生成爱心
+        setInterval(createHeart, 300);
+
+        // 3. 按钮点击事件
+        const loveBtn = document.getElementById('loveBtn');
+        loveBtn.addEventListener('click', function() {
+            // 播放音乐（需先替换音乐链接）
+            const music = document.getElementById('music');
+            music.play().catch(err => console.log('音乐播放需要用户交互:', err));
+            
+            // 修改文字
+            document.querySelector('.title').innerText = '💖 双向奔赴的爱 💖';
+            document.querySelector('.content').innerHTML = 
+                '余生漫漫，皆是你<br>' +
+                '愿我们岁岁年年，朝朝暮暮<br>' +
+                '爱你不止一点点 ❤️';
+            loveBtn.innerText = '永远在一起 💞';
+            loveBtn.disabled = true;
+            loveBtn.style.backgroundColor = '#e62958';
+        });
+
+        // 4. 页面加载时自动播放音乐（微信中需用户点击后才能播放）
+        document.addEventListener('touchstart', function() {
+            const music = document.getElementById('music');
+            music.play().catch(err => {});
+        }, { once: true });
+    </script>
+</body>
+</html>
